@@ -45,25 +45,21 @@ class ListNode(_x: Int = 0, _next: ListNode = null):
     MurmurHash3.mix(x.hashCode(), nextHash)
 
 def removeNthNodeFromListImpl(head: ListNode, n: Int): ListNode =
-  var counter = 1 // first poiter
-  if head.next == null && n == 1 then
-    println(s"$counter. to remove ${head.x}")
-    return null
+  val dummy = ListNode(0, head)
+  var fast  = dummy
+  var slow  = dummy
 
-  @scala.annotation.tailrec
-  def traverse(ln: ListNode): Unit = ln match
-    case null => println(s"$counter end")
-    case ln   =>
-      if counter % n == 0 then
-        println(s"$counter. to remove ${ln.x}")
-      else
-        println(s"$counter, ${ln.x}")
-      
-      counter += 1
-      traverse(ln.next)
+  var steps = 0
+  while steps < n do
+    fast = fast.next
+    steps += 1
 
-  traverse(head)
-  null
+  while fast.next != null do
+    fast = fast.next
+    slow = slow.next
+
+  slow.next = slow.next.next
+  dummy.next
 
 @main def removeNthNodeFromList(): Unit =
 
@@ -71,7 +67,10 @@ def removeNthNodeFromListImpl(head: ListNode, n: Int): ListNode =
     (ListNode(7, ListNode(3, ListNode(9, null))), 2) -> ListNode(7, ListNode(9, null)),
     (ListNode(4, null), 1)                           -> null,
     (ListNode(5, ListNode(8, null)), 2)              -> ListNode(8, null),
-    (ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5, ListNode(6, null)))))), 4) -> ListNode(1, ListNode(2, ListNode(4, ListNode(5, ListNode(6, null))))),
+    (ListNode(1, ListNode(2, ListNode(3, ListNode(4, ListNode(5, ListNode(6, null)))))), 4) -> ListNode(
+      1,
+      ListNode(2, ListNode(4, ListNode(5, ListNode(6, null))))
+    ),
   )
 
   val impl = List(
@@ -82,6 +81,5 @@ def removeNthNodeFromListImpl(head: ListNode, n: Int): ListNode =
     removeNthNodeFromListDef <- impl
     ((head -> n), check)     <- data
   do
-    removeNthNodeFromListDef(head, n)
-    // assert:
-    //   removeNthNodeFromListDef(head, n) == check
+    assert:
+      removeNthNodeFromListDef(head, n) == check
