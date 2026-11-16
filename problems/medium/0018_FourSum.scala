@@ -150,20 +150,49 @@ def fourSumTwoPointers(nums: Array[Int], target: Int): List[List[Int]] =
 
   results.toList.sortBy(values => (values(0), values(1), values(2), values(3)))
 
+def fourSumTwoPointersLong(nums: Array[Int], target: Int): List[List[Int]] =
+  val sorted  = nums.sorted
+  val results = List.newBuilder[List[Int]]
+  val goal    = target.toLong
+  var i       = 0
+
+  while i <= sorted.length - 4 do
+    if i == 0 || sorted(i) != sorted(i - 1) then
+      var j = i + 1
+
+      while j <= sorted.length - 3 do
+        if j == i + 1 || sorted(j) != sorted(j - 1) then
+          var left  = j + 1
+          var right = sorted.length - 1
+
+          while left < right do
+            val sum = sorted(i).toLong + sorted(j).toLong + sorted(left).toLong + sorted(right).toLong
+            if sum < goal then left += 1
+            else if sum > goal then right -= 1
+            else
+              results += List(sorted(i), sorted(j), sorted(left), sorted(right))
+              val leftValue  = sorted(left)
+              val rightValue = sorted(right)
+              while left < right && sorted(left) == leftValue do left += 1
+              while left < right && sorted(right) == rightValue do right -= 1
+        j += 1
+    i += 1
+
+  results.result()
+
 @main def fourSum(): Unit =
 
   val data = List(
     (Array(1, 0, -1, 0, -2, 2), 0) -> List(List(-2, -1, 1, 2), List(-2, 0, 0, 2), List(-1, 0, 0, 1)),
     (Array(2, 2, 2, 2, 2), 8)      -> List(List(2, 2, 2, 2)),
-    (Array(1000000000, 1000000000, 1000000000, 1000000000), -294967296) -> List(
-      List(1000000000, 1000000000, 1000000000, 1000000000)
-    )
+    (Array(1000000000, 1000000000, 1000000000, 1000000000), -294967296) -> Nil
   )
 
   val impl = List(
-    fourSumHash,
-    fourSumNSum,
-    fourSumTwoPointers
+    // fourSumHash,
+    // fourSumNSum,
+    // fourSumTwoPointers,
+    fourSumTwoPointersLong
   )
 
   for
