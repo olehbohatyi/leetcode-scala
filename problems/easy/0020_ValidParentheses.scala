@@ -51,7 +51,7 @@ def validParenthesesStack(s: String): Boolean =
         d.get(char) match
           case Some(b) => c.push(b)
           case None    =>
-            if c.pop() != char then break(false)
+            if c.isEmpty || c.pop() != char then break(false)
       c.isEmpty
 
 @main def validParentheses(): Unit =
@@ -61,7 +61,8 @@ def validParenthesesStack(s: String): Boolean =
     "()[]{}" -> true,
     "(]"     -> false,
     "([])"   -> true,
-    "([)]"   -> false
+    "([)]"   -> false,
+    "){"     -> false
   )
 
   val impl = List(
