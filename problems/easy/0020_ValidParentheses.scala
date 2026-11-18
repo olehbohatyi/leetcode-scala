@@ -36,7 +36,23 @@
 // 1 <= s.length <= 10^4
 // s consists of parentheses only '()[]{}'.
 
-def validParenthesesStack(s: String): Boolean = ???
+def validParenthesesStack(s: String): Boolean =
+  import scala.util.boundary, boundary.break
+  if s.length % 2 != 0 then false
+  else
+    val c = scala.collection.mutable.Stack.empty[Char]
+    val d = scala.collection.immutable.HashMap(
+      '(' -> ')',
+      '[' -> ']',
+      '{' -> '}',
+    )
+    boundary:
+      for char <- s do
+        d.get(char) match
+          case Some(b) => c.push(b)
+          case None    =>
+            if c.pop() != char then break(false)
+      c.isEmpty
 
 @main def validParentheses(): Unit =
 
