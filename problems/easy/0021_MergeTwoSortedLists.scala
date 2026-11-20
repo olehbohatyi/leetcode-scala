@@ -1,5 +1,7 @@
 #!/usr/bin/env -S scala shebang
 
+import scala.annotation.tailrec
+
 // 21. Merge Two Sorted Lists
 // Difficulty: Easy
 // https://leetcode.com/problems/merge-two-sorted-lists/
@@ -44,8 +46,21 @@ class ListNode(_x: Int = 0, _next: ListNode = null):
     val nextHash = if next == null then 0 else next.hashCode()
     MurmurHash3.mix(x.hashCode(), nextHash)
 
-// TODO: one function per approach, named mergeTwoSortedLists<Impl>. e.g. `mergeTwoSortedListsTailrec` or `mergeTwoSortedListsLoop`.
-def mergeTwoSortedListsImpl(list1: ListNode, list2: ListNode): ListNode = ???
+def mergeTwoSortedListsTailrec(list1: ListNode, list2: ListNode): ListNode =
+  @tailrec
+  def loop(one: ListNode, two: ListNode, acc: ListNode): Unit =
+    one -> two match
+      case (null, two)                 => acc.next = two
+      case (one, null)                 => acc.next = one
+      case (one, two) if one.x > two.x =>
+        acc.next = two
+        loop(one, two.next, acc.next)
+      case (one, two) =>
+        acc.next = one
+        loop(one.next, two, acc.next)
+  val res = ListNode(0, null)
+  loop(list1, list2, res)
+  res.next
 
 @main def mergeTwoSortedLists(): Unit =
 
@@ -57,7 +72,7 @@ def mergeTwoSortedListsImpl(list1: ListNode, list2: ListNode): ListNode = ???
   )
 
   val impl = List(
-    mergeTwoSortedListsImpl
+    mergeTwoSortedListsTailrec
   )
 
   for
