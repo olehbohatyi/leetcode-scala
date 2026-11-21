@@ -1,4 +1,4 @@
-# leetcode_scala
+# leetcode scala
 
 My LeetCode solutions in Scala 3 (`3.9.0`, see [project.scala](project.scala)). Each problem is a self-contained
 script that carries its own description, several solution approaches, and assertions that check them.
