@@ -1,5 +1,7 @@
 #!/usr/bin/env -S scala shebang
 
+import scala.collection.mutable.*
+
 // 22. Generate Parentheses
 // Difficulty: Medium
 // https://leetcode.com/problems/generate-parentheses/
@@ -18,24 +20,18 @@
 // Constraints:
 // 1 <= n <= 8
 
-// TODO: one function per approach, named generateParentheses<Impl>. e.g. `generateParenthesesTailrec` or `generateParenthesesLoop`.
-def generateParenthesesTest(n: Int): List[String] =
-  if n == 1 then List("()")
-  else
-    var o = n - 1
-    var c = n
-    val r = scala.collection.mutable.ListBuffer[String]()
-    val s = scala.collection.mutable.StringBuilder("(")
-    while o != 0 || c != 0 do
-      if o < c then
-        s += ')'
-        c -= 1
-      else
-        s += '('
-        o -= 1
-    val str = s.result
-    r += str
-    r.result
+def generateParenthesesWhileStack(n: Int): List[String] =
+  val r = ListBuffer[String]()
+  val v = Stack(("", 0, 0))
+
+  while v.nonEmpty do
+    val (s, o, c) = v.pop()
+    if o == n && c == n then r += s
+    else
+      if o < n then v.push((s + "(", o + 1, c))
+      if c < o then v.push((s + ")", o, c + 1))
+
+  r.toList
 
 @main def generateParentheses(): Unit =
 
@@ -45,7 +41,7 @@ def generateParenthesesTest(n: Int): List[String] =
   )
 
   val impl = List(
-    generateParenthesesTest
+    generateParenthesesWhileStack
   )
 
   for
@@ -53,6 +49,4 @@ def generateParenthesesTest(n: Int): List[String] =
     (input, check)         <- data
   do
     assert:
-      // generateParenthesesDef(input) == check
-      println(generateParenthesesDef(input))
-      true
+      generateParenthesesDef(input).sorted == check.sorted
