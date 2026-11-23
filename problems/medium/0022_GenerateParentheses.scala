@@ -33,6 +33,20 @@ def generateParenthesesWhileStack(n: Int): List[String] =
 
   r.toList
 
+def generateParenthesesRecursive(n: Int): List[String] =
+  if n == 1 then List("()")
+  else
+    val res = ListBuffer[String]()
+
+    def aux(o: Int, c: Int, s: String): Unit =
+      if o == 0 && c == 0 then res += s + ")"
+      else
+        if o > 0 then aux(o - 1, c, s + "(")
+        if c >= o then aux(o, c - 1, s + ")")
+
+    aux(n - 1, n - 1, "(")
+    res.toList
+
 @main def generateParentheses(): Unit =
 
   val data = List(
@@ -41,7 +55,8 @@ def generateParenthesesWhileStack(n: Int): List[String] =
   )
 
   val impl = List(
-    generateParenthesesWhileStack
+    generateParenthesesWhileStack,
+    generateParenthesesRecursive
   )
 
   for
