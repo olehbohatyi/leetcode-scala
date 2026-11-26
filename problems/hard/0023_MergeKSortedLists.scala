@@ -51,7 +51,39 @@ class ListNode(_x: Int = 0, _next: ListNode = null):
     val nextHash = if next == null then 0 else next.hashCode()
     MurmurHash3.mix(x.hashCode(), nextHash)
 
-def mergeKSortedListsImpl(lists: List[ListNode]): ListNode = ???
+def mergeKSortedListsWhile(lists: List[ListNode]): ListNode =
+  def mergeTwo(first: ListNode, second: ListNode): ListNode =
+    val head  = ListNode()
+    var tail  = head
+    var left  = first
+    var right = second
+
+    while left != null && right != null do
+      if left.x <= right.x then
+        tail.next = left
+        left = left.next
+      else
+        tail.next = right
+        right = right.next
+      tail = tail.next
+
+    tail.next = if left != null then left else right
+    head.next
+
+  var remaining = lists.filter(_ != null)
+
+  while remaining.size > 1 do
+    val merged = scala.collection.mutable.ListBuffer[ListNode]()
+    var index  = 0
+
+    while index < remaining.size do
+      if index + 1 < remaining.size then merged += mergeTwo(remaining(index), remaining(index + 1))
+      else merged += remaining(index)
+      index += 2
+
+    remaining = merged.toList
+
+  if remaining.isEmpty then null else remaining.head
 
 @main def mergeKSortedLists(): Unit =
 
@@ -75,7 +107,7 @@ def mergeKSortedListsImpl(lists: List[ListNode]): ListNode = ???
   )
 
   val impl = List(
-    mergeKSortedListsImpl
+    mergeKSortedListsWhile
   )
 
   for
